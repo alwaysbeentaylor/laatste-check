@@ -755,30 +755,7 @@
 
             <!-- Step 5: Praktisch -->
             <div class="step" data-step="5">
-                <h2>5. Samenwerking & Budget 📝</h2>
-
-                <div class="question-block">
-                    <label>Hoe wil je samenwerken?</label>
-                    <p class="helper-text">Meerdere opties mogelijk als je twijfelt.</p>
-                    <div class="options-list">
-                        <div class="option-row" onclick="toggleSelection(this, 'budget_type', 'Basis Website')">
-                            <div class="radio-circle"></div>
-                            <div class="option-text">
-                                <span class="opt-title">Basis (Eenmalig)</span>
-                                <span class="opt-desc">Goede website, daarna beheer ik het zelf. Eenmalige
-                                    investering.</span>
-                            </div>
-                        </div>
-                        <div class="option-row" onclick="toggleSelection(this, 'budget_type', 'Growth Partner')">
-                            <div class="radio-circle"></div>
-                            <div class="option-text">
-                                <span class="opt-title">Growth Partner (Service)</span>
-                                <span class="opt-desc">Jullie regelen alles (updates, menu's, socials). Maandelijks
-                                    bedrag.</span>
-                            </div>
-                        </div>
-                    </div>
-                </div>
+                <h2>5. Praktisch & Planning 📝</h2>
 
                 <div class="question-block">
                     <label>Wie hakt de knoop door?</label>
@@ -825,7 +802,7 @@
             brand_vibe: [], sfeer: [], kleuren: [],
             focus_punt: [], menu_weergave: [], online_bestellen: false,
             socials: [], content_creation: [], post_frequentie: '', review_strategie: false,
-            budget_type: [], beslisser: '', deadline: ''
+            beslisser: '', deadline: ''
         };
 
         document.addEventListener('DOMContentLoaded', () => {
@@ -941,8 +918,7 @@
 • Freq: ${a.post_frequentie || '-'}
 • Reviews: ${a.review_strategie ? 'Actief' : 'Passief'}
 
-5️⃣ *Budget*
-• Model: ${join(a.budget_type)}
+5️⃣ *Planning*
 • Beslisser: ${a.beslisser || '-'}
 • Deadline: ${a.deadline || '-'}
 
