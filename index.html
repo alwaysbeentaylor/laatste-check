@@ -1,0 +1,966 @@
+<!DOCTYPE html>
+<html lang="nl">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Laatste Check - Tanoshi</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <style>
+        /* INONED STYLE.CSS VOOR ZEKERHEID */
+        :root {
+            --bg-dark: #0f1014;
+            --text-main: #ffffff;
+            --text-muted: #a0a0a0;
+            --accent-gold: #d4af37;
+            --accent-red: #e63946;
+            --glass-bg: rgba(255, 255, 255, 0.05);
+            --glass-border: rgba(255, 255, 255, 0.1);
+            --card-radius: 16px;
+            --transition: 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Outfit', sans-serif;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        body {
+            background-color: var(--bg-dark);
+            color: var(--text-main);
+            overflow-x: hidden;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+        }
+
+        .background-globes {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            overflow: hidden;
+        }
+
+        .globe {
+            position: absolute;
+            border-radius: 50%;
+            filter: blur(80px);
+            opacity: 0.4;
+            animation: float 10s infinite ease-in-out;
+        }
+
+        .globe-1 {
+            width: 300px;
+            height: 300px;
+            background: var(--accent-red);
+            top: -50px;
+            left: -50px;
+        }
+
+        .globe-2 {
+            width: 400px;
+            height: 400px;
+            background: var(--accent-gold);
+            bottom: -100px;
+            right: -100px;
+            animation-delay: 2s;
+        }
+
+        @keyframes float {
+
+            0%,
+            100% {
+                transform: translate(0, 0);
+            }
+
+            50% {
+                transform: translate(30px, 50px);
+            }
+        }
+
+        .app-container {
+            width: 100%;
+            max-width: 480px;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            height: 100vh;
+            justify-content: space-between;
+        }
+
+        header {
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        .logo {
+            font-size: 1.5rem;
+            font-weight: 700;
+            letter-spacing: 1px;
+            margin-bottom: 15px;
+        }
+
+        .logo .accent {
+            color: var(--accent-red);
+        }
+
+        .progress-container {
+            width: 100%;
+            height: 6px;
+            background: var(--glass-bg);
+            border-radius: 3px;
+            overflow: hidden;
+        }
+
+        .progress-bar {
+            height: 100%;
+            width: 0%;
+            background: linear-gradient(90deg, var(--accent-red), var(--accent-gold));
+            transition: width 0.5s ease;
+        }
+
+        main {
+            flex: 1;
+            position: relative;
+        }
+
+        .step {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            opacity: 0;
+            pointer-events: none;
+            /* Inactive steps shouldn't block clicks */
+            transform: translateX(20px);
+            transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+            background: var(--bg-dark);
+            /* Prevent see-through overlap mess */
+        }
+
+        .step.active {
+            opacity: 1;
+            pointer-events: auto;
+            /* Active step consumes clicks */
+            transform: translateX(0);
+            position: relative;
+            z-index: 10;
+        }
+
+        h1,
+        h2 {
+            margin-bottom: 20px;
+        }
+
+        h2 {
+            font-size: 1.4rem;
+            color: var(--accent-gold);
+        }
+
+        .glass-card {
+            background: var(--glass-bg);
+            backdrop-filter: blur(12px);
+            border: 1px solid var(--glass-border);
+            border-radius: var(--card-radius);
+            padding: 30px;
+            text-align: center;
+        }
+
+        .subtext {
+            color: var(--text-muted);
+            font-size: 0.9rem;
+            margin-top: 10px;
+            margin-bottom: 30px;
+        }
+
+        .question-block {
+            margin-bottom: 25px;
+        }
+
+        .question-block label {
+            display: block;
+            margin-bottom: 10px;
+            font-weight: 600;
+            font-size: 1rem;
+        }
+
+        input[type="text"],
+        input[type="date"],
+        textarea {
+            width: 100%;
+            background: var(--glass-bg);
+            border: 1px solid var(--glass-border);
+            padding: 12px;
+            border-radius: 8px;
+            color: #fff;
+            font-size: 1rem;
+            transition: var(--transition);
+        }
+
+        input:focus,
+        textarea:focus {
+            outline: none;
+            border-color: var(--accent-gold);
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        textarea {
+            resize: none;
+            height: 80px;
+        }
+
+        /* Options Grid */
+        .options-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 10px;
+        }
+
+        .option-card {
+            background: var(--glass-bg);
+            border: 1px solid var(--glass-border);
+            border-radius: 12px;
+            padding: 15px 10px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: var(--transition);
+            text-align: center;
+        }
+
+        .option-card:active {
+            transform: scale(0.95);
+        }
+
+        .option-card.selected {
+            background: rgba(212, 175, 55, 0.2);
+            border-color: var(--accent-gold);
+        }
+
+        .option-card .icon {
+            font-size: 1.5rem;
+            margin-bottom: 8px;
+        }
+
+        .option-card span {
+            font-size: 0.8rem;
+            line-height: 1.2;
+        }
+
+        /* Option List */
+        .options-list {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .option-row {
+            display: flex;
+            align-items: center;
+            padding: 12px 15px;
+            background: var(--glass-bg);
+            border: 1px solid var(--glass-border);
+            border-radius: 10px;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .option-row.selected {
+            background: rgba(212, 175, 55, 0.15);
+            border-color: var(--accent-gold);
+        }
+
+        .radio-circle {
+            width: 18px;
+            height: 18px;
+            border: 2px solid var(--text-muted);
+            border-radius: 50%;
+            margin-right: 12px;
+            transition: 0.2s;
+            position: relative;
+            flex-shrink: 0;
+        }
+
+        .option-row.selected .radio-circle {
+            border-color: var(--accent-gold);
+        }
+
+        .option-row.selected .radio-circle::after {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 10px;
+            height: 10px;
+            background: var(--accent-gold);
+            border-radius: 50%;
+        }
+
+        /* Color Cards */
+        .color-card {
+            position: relative;
+        }
+
+        .swatch {
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            margin-bottom: 5px;
+            border: 2px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .color-card .check {
+            display: none;
+            position: absolute;
+            top: 5px;
+            right: 5px;
+            width: 8px;
+            height: 8px;
+            background: var(--accent-gold);
+            border-radius: 50%;
+        }
+
+        .color-card.selected .check {
+            display: block;
+        }
+
+        /* Tags */
+        .tag-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+
+        .tag {
+            padding: 8px 16px;
+            border-radius: 20px;
+            background: var(--glass-bg);
+            border: 1px solid var(--glass-border);
+            font-size: 0.9rem;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .tag.selected {
+            background: var(--accent-gold);
+            color: #000;
+            border-color: var(--accent-gold);
+            font-weight: 600;
+        }
+
+        /* Switch */
+        .switch-container {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            background: var(--glass-bg);
+            padding: 15px;
+            border-radius: 12px;
+        }
+
+        .switch {
+            position: relative;
+            display: inline-block;
+            width: 50px;
+            height: 26px;
+        }
+
+        .switch input {
+            display: none;
+        }
+
+        .slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: #333;
+            transition: .4s;
+            border-radius: 34px;
+        }
+
+        .slider:before {
+            position: absolute;
+            content: "";
+            height: 20px;
+            width: 20px;
+            left: 3px;
+            bottom: 3px;
+            background-color: white;
+            transition: .4s;
+            border-radius: 50%;
+        }
+
+        input:checked+.slider {
+            background-color: var(--accent-red);
+        }
+
+        input:checked+.slider:before {
+            transform: translateX(24px);
+        }
+
+        /* Buttons */
+        .nav-buttons {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 30px;
+            gap: 15px;
+        }
+
+        button {
+            border: none;
+            padding: 14px 24px;
+            border-radius: 12px;
+            font-weight: 600;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .btn-primary {
+            background: var(--accent-gold);
+            color: #000;
+            flex: 1;
+        }
+
+        .btn-primary:active {
+            transform: scale(0.98);
+        }
+
+        .btn-seconday {
+            background: transparent;
+            border: 1px solid var(--text-muted);
+            color: var(--text-muted);
+        }
+
+        /* Helper Text & Styled Select */
+        .helper-text {
+            font-size: 0.85rem;
+            color: var(--text-muted);
+            margin-bottom: 8px;
+            margin-top: -5px;
+            font-style: italic;
+        }
+
+        .styled-select {
+            width: 100%;
+            background: var(--glass-bg);
+            border: 1px solid var(--glass-border);
+            padding: 12px;
+            border-radius: 8px;
+            color: #fff;
+            font-size: 1rem;
+            appearance: none;
+            background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='white' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e");
+            background-repeat: no-repeat;
+            background-position: right 1rem center;
+            background-size: 1em;
+        }
+
+        .styled-select:focus {
+            outline: none;
+            border-color: var(--accent-gold);
+            background-color: rgba(255, 255, 255, 0.1);
+        }
+
+        .option-text {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+            text-align: left;
+        }
+
+        .opt-title {
+            font-weight: 700;
+            margin-bottom: 4px;
+            color: #fff;
+        }
+
+        .opt-desc {
+            font-size: 0.8rem;
+            color: var(--text-muted);
+            line-height: 1.3;
+        }
+
+        /* Success */
+        .checkmark-circle {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            background: var(--accent-gold);
+            margin: 0 auto 20px auto;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .checkmark-circle .checkmark {
+            display: block;
+            width: 25px;
+            height: 40px;
+            border-bottom: 5px solid #000;
+            border-right: 5px solid #000;
+            transform: rotate(45deg);
+            margin-bottom: 10px;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="background-globes">
+        <div class="globe globe-1"></div>
+        <div class="globe globe-2"></div>
+    </div>
+
+    <div class="app-container">
+        <!-- Header -->
+        <header class="header">
+            <div class="logo">Tanoshi <span class="accent">Sushi</span></div>
+            <div class="progress-container">
+                <div class="progress-bar" id="progressBar"></div>
+            </div>
+        </header>
+
+        <!-- Main Content (Steps) -->
+        <main id="wizard">
+            <!-- Step 0: Welcome -->
+            <div class="step active" data-step="0">
+                <div class="glass-card welcome-card">
+                    <h1>Laatste details</h1>
+                    <p>Even de puntjes op de i voor we starten.</p>
+                    <p class="subtext">Selecteer alles wat van toepassing is.</p>
+                    <button class="btn-primary" id="btnStart">Starten</button>
+                </div>
+            </div>
+
+            <!-- Step 1: Doel & Resultaat -->
+            <div class="step" data-step="1">
+                <h2>1. Doel & Resultaat 🎯</h2>
+                <div class="question-block">
+                    <label>Wat zijn de belangrijkste doelen?</label>
+                    <p class="helper-text">(Meerdere keuzes mogelijk)</p>
+                    <div class="options-grid">
+                        <div class="option-card" onclick="toggleSelection(this, 'hoofddoel', 'Meer reservaties')">
+                            <span class="icon">📅</span>
+                            <span>Meer reservaties</span>
+                        </div>
+                        <div class="option-card" onclick="toggleSelection(this, 'hoofddoel', 'Meer take-away')">
+                            <span class="icon">🍱</span>
+                            <span>Meer take-away</span>
+                        </div>
+                        <div class="option-card" onclick="toggleSelection(this, 'hoofddoel', 'Imago & Branding')">
+                            <span class="icon">✨</span>
+                            <span>Imago & Branding</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="question-block">
+                    <label>Wanneer is het voor jullie geslaagd?</label>
+                    <textarea id="succes_definitie" placeholder="Als we over 6 maanden..."></textarea>
+                </div>
+
+                <div class="question-block">
+                    <label>Grootste ergernissen nu?</label>
+                    <textarea id="frustraties" placeholder="Dingen die nu tijd kosten of niet werken..."></textarea>
+                </div>
+                <div class="nav-buttons">
+                    <button class="btn-secondary" onclick="prevStep()">Terug</button>
+                    <button class="btn-primary" onclick="nextStep()">Volgende</button>
+                </div>
+            </div>
+
+            <!-- Step 2: Look & Feel -->
+            <div class="step" data-step="2">
+                <h2>2. Stijl & Sfeer 🎨</h2>
+                <div class="question-block">
+                    <label>Welk gevoel moet de klant krijgen?</label>
+                    <div class="tag-container" id="brand_tags">
+                        <div class="tag" onclick="toggleTag(this, 'brand_vibe')">Exclusief</div>
+                        <div class="tag" onclick="toggleTag(this, 'brand_vibe')">Gezellig</div>
+                        <div class="tag" onclick="toggleTag(this, 'brand_vibe')">Familiaal</div>
+                        <div class="tag" onclick="toggleTag(this, 'brand_vibe')">Modern</div>
+                        <div class="tag" onclick="toggleTag(this, 'brand_vibe')">Japans-Traditioneel</div>
+                        <div class="tag" onclick="toggleTag(this, 'brand_vibe')">Hip & Trendy</div>
+                    </div>
+                </div>
+
+                <div class="question-block">
+                    <label>Welke stijlen spreken aan?</label>
+                    <div class="options-list">
+                        <div class="option-row" onclick="toggleSelection(this, 'sfeer', 'Warm & Intiem')">
+                            <div class="radio-circle"></div>
+                            <span>Warm & Intiem (Donker hout, sfeerlicht)</span>
+                        </div>
+                        <div class="option-row" onclick="toggleSelection(this, 'sfeer', 'Strak & Minimal')">
+                            <div class="radio-circle"></div>
+                            <span>Strak & Minimalistisch (Veel ruimte, modern)</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="question-block">
+                    <label>Kleurpalet voorkeur(en)?</label>
+                    <div class="options-grid color-grid">
+                        <div class="option-card color-card" onclick="toggleSelection(this, 'kleuren', 'Wit-Goud')">
+                            <div class="check"></div>
+                            <div class="swatch" style="background: linear-gradient(135deg, #fff 0%, #d4af37 100%);">
+                            </div>
+                            <span>Wit & Goud</span>
+                        </div>
+                        <div class="option-card color-card" onclick="toggleSelection(this, 'kleuren', 'Olijf-Goud')">
+                            <div class="check"></div>
+                            <div class="swatch" style="background: linear-gradient(135deg, #556b2f 0%, #d4af37 100%);">
+                            </div>
+                            <span>Olijf & Goud</span>
+                        </div>
+                        <div class="option-card color-card" onclick="toggleSelection(this, 'kleuren', 'Donker-Rood')">
+                            <div class="check"></div>
+                            <div class="swatch" style="background: linear-gradient(135deg, #222 0%, #e63946 100%);">
+                            </div>
+                            <span>Dark & Red</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="nav-buttons">
+                    <button class="btn-secondary" onclick="prevStep()">Terug</button>
+                    <button class="btn-primary" onclick="nextStep()">Volgende</button>
+                </div>
+            </div>
+
+            <!-- Step 3: Menu & Functie -->
+            <div class="step" data-step="3">
+                <h2>3. Menukaart & Prioriteiten 🍣</h2>
+
+                <div class="question-block">
+                    <label>Wat is belangrijk?</label>
+                    <div class="options-list">
+                        <div class="option-row" onclick="toggleSelection(this, 'focus_punt', 'Direct reserveren')">
+                            <div class="radio-circle"></div>
+                            <span>Snel reserveren (Conversie focus)</span>
+                        </div>
+                        <div class="option-row" onclick="toggleSelection(this, 'focus_punt', 'Eerst sfeer proeven')">
+                            <div class="radio-circle"></div>
+                            <span>Eerst menu/foto's zien (Beleving focus)</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="question-block">
+                    <label>Hoe tonen we de kaart?</label>
+                    <div class="options-list">
+                        <div class="option-row" onclick="toggleSelection(this, 'menu_weergave', 'Volledig online')">
+                            <div class="radio-circle"></div>
+                            <span>Volledige lijst interactief</span>
+                        </div>
+                        <div class="option-row" onclick="toggleSelection(this, 'menu_weergave', 'Highlights + PDF')">
+                            <div class="radio-circle"></div>
+                            <span>Alleen highlights + PDF download</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="question-block">
+                    <label>Online bestellen?</label>
+                    <div class="switch-container">
+                        <span class="switch-label">Nee</span>
+                        <label class="switch">
+                            <input type="checkbox" id="online_bestellen">
+                            <span class="slider round"></span>
+                        </label>
+                        <span class="switch-label">Ja (Take-away)</span>
+                    </div>
+                </div>
+                <div class="nav-buttons">
+                    <button class="btn-secondary" onclick="prevStep()">Terug</button>
+                    <button class="btn-primary" onclick="nextStep()">Volgende</button>
+                </div>
+            </div>
+
+            <!-- Step 4: Content & Socials -->
+            <div class="step" data-step="4">
+                <h2>4. Content & Socials 📸</h2>
+
+                <div class="question-block">
+                    <label>Actieve kanalen?</label>
+                    <div class="options-grid small-icons">
+                        <div class="option-card" onclick="toggleSelection(this, 'socials', 'Instagram')">
+                            <span>📸 Insta</span>
+                        </div>
+                        <div class="option-card" onclick="toggleSelection(this, 'socials', 'Facebook')">
+                            <span>📘 FB</span>
+                        </div>
+                        <div class="option-card" onclick="toggleSelection(this, 'socials', 'TikTok')">
+                            <span>🎵 TikTok</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="question-block">
+                    <label>Content Creatie</label>
+                    <p class="helper-text">Wie maakt de foto's en video's?</p>
+                    <div class="options-list">
+                        <div class="option-row" onclick="toggleSelection(this, 'content_creation', 'Alles zelf')">
+                            <div class="radio-circle"></div>
+                            <span>We doen dit zelf / hebben iemand</span>
+                        </div>
+                        <div class="option-row" onclick="toggleSelection(this, 'content_creation', 'Hulp nodig')">
+                            <div class="radio-circle"></div>
+                            <span>Graag ontzorgen (Jullie doen het)</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="question-block">
+                    <label>Post Frequentie</label>
+                    <select id="post_frequentie" class="styled-select">
+                        <option value="" disabled selected>Hoe vaak willen jullie posten?</option>
+                        <option value="1x/week">1x per week</option>
+                        <option value="3x/week">3x per week</option>
+                        <option value="Dagelijks">Dagelijks</option>
+                        <option value="Ad-hoc">Alleen bij speciale acties</option>
+                    </select>
+                </div>
+
+                <div class="question-block">
+                    <label>Reviews & Klanten</label>
+                    <p class="helper-text">Moeten we reviews actief pushen?</p>
+                    <div class="switch-container">
+                        <span class="switch-label">Passief (Niks doen)</span>
+                        <label class="switch">
+                            <input type="checkbox" id="review_strategie">
+                            <span class="slider round"></span>
+                        </label>
+                        <span class="switch-label">Actief (Campagne)</span>
+                    </div>
+                </div>
+
+                <div class="nav-buttons">
+                    <button class="btn-secondary" onclick="prevStep()">Terug</button>
+                    <button class="btn-primary" onclick="nextStep()">Volgende</button>
+                </div>
+            </div>
+
+            <!-- Step 5: Praktisch -->
+            <div class="step" data-step="5">
+                <h2>5. Samenwerking & Budget 📝</h2>
+
+                <div class="question-block">
+                    <label>Hoe wil je samenwerken?</label>
+                    <p class="helper-text">Meerdere opties mogelijk als je twijfelt.</p>
+                    <div class="options-list">
+                        <div class="option-row" onclick="toggleSelection(this, 'budget_type', 'Basis Website')">
+                            <div class="radio-circle"></div>
+                            <div class="option-text">
+                                <span class="opt-title">Basis (Eenmalig)</span>
+                                <span class="opt-desc">Goede website, daarna beheer ik het zelf. Eenmalige
+                                    investering.</span>
+                            </div>
+                        </div>
+                        <div class="option-row" onclick="toggleSelection(this, 'budget_type', 'Growth Partner')">
+                            <div class="radio-circle"></div>
+                            <div class="option-text">
+                                <span class="opt-title">Growth Partner (Service)</span>
+                                <span class="opt-desc">Jullie regelen alles (updates, menu's, socials). Maandelijks
+                                    bedrag.</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="question-block">
+                    <label>Wie hakt de knoop door?</label>
+                    <input type="text" id="beslisser" placeholder="Naam...">
+                </div>
+                <div class="question-block">
+                    <label>Deadline / Streefdatum</label>
+                    <input type="date" id="deadline">
+                </div>
+
+                <div class="nav-buttons">
+                    <button class="btn-secondary" onclick="prevStep()">Terug</button>
+                    <button class="btn-primary" onclick="finishForm()">Verzenden 🚀</button>
+                </div>
+            </div>
+
+            <!-- Step 6: Success -->
+            <div class="step" data-step="6">
+                <div class="glass-card success-card">
+                    <div class="checkmark-circle">
+                        <div class="checkmark">L</div>
+                    </div>
+                    <h2>Bedankt!</h2>
+                    <p>We hebben alles goed ontvangen.</p>
+                    <p class="subtext">Ik ga hier direct mee aan de slag.</p>
+                    <button class="btn-secondary" onclick="location.reload()">Opnieuw invullen</button>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- INLINED JAVASCRIPT FOR STABILITY -->
+    <script>
+        const CONFIG = {
+            BOT_TOKEN: '8547433349:AAFniIQU7rO9-nzHkgJK6F7Hv3MzLzv1Ymk',
+            CHAT_ID: '1471110442'
+        };
+
+        let currentStep = 0;
+        const totalSteps = 6;
+
+        window.answers = {
+            hoofddoel: [], succes_definitie: '', frustraties: '',
+            brand_vibe: [], sfeer: [], kleuren: [],
+            focus_punt: [], menu_weergave: [], online_bestellen: false,
+            socials: [], content_creation: [], post_frequentie: '', review_strategie: false,
+            budget_type: [], beslisser: '', deadline: ''
+        };
+
+        document.addEventListener('DOMContentLoaded', () => {
+            console.log("App ready");
+            updateProgress();
+
+            // Hard bind the button event to be 100% sure
+            const btnStart = document.getElementById('btnStart');
+            if (btnStart) {
+                btnStart.addEventListener('click', nextStep);
+            }
+        });
+
+        function nextStep() {
+            try {
+                if (!validateStep(currentStep)) return;
+                saveInputs(currentStep);
+                if (currentStep < totalSteps) {
+                    changeStep(currentStep + 1);
+                }
+            } catch (e) { alert(e); }
+        }
+
+        function prevStep() {
+            if (currentStep > 0) changeStep(currentStep - 1);
+        }
+
+        function changeStep(newStep) {
+            const currentEl = document.querySelector(`.step[data-step="${currentStep}"]`);
+            if (currentEl) {
+                currentEl.classList.remove('active');
+                // Force hide interaction on old step
+                currentEl.style.pointerEvents = 'none';
+            }
+
+            setTimeout(() => {
+                currentStep = newStep;
+                const nextEl = document.querySelector(`.step[data-step="${currentStep}"]`);
+                if (nextEl) {
+                    nextEl.classList.add('active');
+                    nextEl.style.pointerEvents = 'auto'; // Force enable
+                    updateProgress();
+                    window.scrollTo(0, 0);
+                }
+            }, 300);
+        }
+
+        function updateProgress() {
+            const bar = document.getElementById('progressBar');
+            if (!bar) return;
+            let pct = (currentStep / (totalSteps - 1)) * 100;
+            if (currentStep === 0) pct = 5;
+            if (pct > 100) pct = 100;
+            bar.style.width = pct + '%';
+        }
+
+        function saveInputs(step) {
+            const safeVal = (id) => document.getElementById(id) ? document.getElementById(id).value : '';
+            const safeCheck = (id) => document.getElementById(id) ? document.getElementById(id).checked : false;
+
+            if (step >= 0) {
+                if (document.getElementById('succes_definitie')) window.answers.succes_definitie = safeVal('succes_definitie');
+                if (document.getElementById('frustraties')) window.answers.frustraties = safeVal('frustraties');
+                if (document.getElementById('online_bestellen')) window.answers.online_bestellen = safeCheck('online_bestellen');
+                if (document.getElementById('post_frequentie')) window.answers.post_frequentie = safeVal('post_frequentie');
+                if (document.getElementById('review_strategie')) window.answers.review_strategie = safeCheck('review_strategie');
+                if (document.getElementById('beslisser')) window.answers.beslisser = safeVal('beslisser');
+                if (document.getElementById('deadline')) window.answers.deadline = safeVal('deadline');
+            }
+        }
+
+        function validateStep(step) { return true; }
+
+        window.toggleSelection = function (el, key, value) {
+            if (!el) return;
+            el.classList.toggle('selected');
+            const idx = window.answers[key].indexOf(value);
+            if (el.classList.contains('selected')) {
+                if (idx === -1) window.answers[key].push(value);
+            } else {
+                if (idx > -1) window.answers[key].splice(idx, 1);
+            }
+        };
+
+        window.toggleTag = function (el, key) { window.toggleSelection(el, key, el.innerText); };
+
+        window.finishForm = function () {
+            saveInputs(5);
+            const a = window.answers;
+            const join = (arr) => arr && arr.length ? arr.join(', ') : '-';
+
+            const msg = `
+🚀 *Laatste Details: Tanoshi Sushi*
+
+1️⃣ *Doel*
+• Doelen: ${join(a.hoofddoel)}
+• Succes: "${a.succes_definitie || '-'}"
+• Frustraties: "${a.frustraties || '-'}"
+
+2️⃣ *Vibe & Stijl*
+• Gevoel: ${join(a.brand_vibe)}
+• Stijl: ${join(a.sfeer)}
+• Kleuren: ${join(a.kleuren)}
+
+3️⃣ *Menu*
+• Prio: ${join(a.focus_punt)}
+• Weergave: ${join(a.menu_weergave)}
+• Online bestellen: ${a.online_bestellen ? 'Ja' : 'Nee'}
+
+4️⃣ *Bereik*
+• Socials: ${join(a.socials)}
+• Content: ${join(a.content_creation)}
+• Freq: ${a.post_frequentie || '-'}
+• Reviews: ${a.review_strategie ? 'Actief' : 'Passief'}
+
+5️⃣ *Budget*
+• Model: ${join(a.budget_type)}
+• Beslisser: ${a.beslisser || '-'}
+• Deadline: ${a.deadline || '-'}
+
+_Mobiele intake_
+            `;
+            sendToTelegram(msg);
+            changeStep(6);
+        };
+
+        function sendToTelegram(text) {
+            if (CONFIG.BOT_TOKEN.includes('YOUR_BOT_TOKEN')) {
+                console.warn('Telegram token not set.');
+                return;
+            }
+            const url = `https://api.telegram.org/bot${CONFIG.BOT_TOKEN}/sendMessage?chat_id=${CONFIG.CHAT_ID}&text=${encodeURIComponent(text)}&parse_mode=Markdown`;
+            fetch(url, { mode: 'no-cors' }).catch(console.error);
+        }
+    </script>
+</body>
+
+</html>
